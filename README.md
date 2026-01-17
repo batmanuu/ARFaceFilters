@@ -7,7 +7,7 @@
 **Objetivo do projeto:** O objetivo deste projeto é desenvolver uma aplicação móvel para Android que utilize Realidade Aumentada (RA) aplicada a filtros faciais, empregando conceitos fundamentais de Computação Gráfica.
 A aplicação faz uso do ARCore para rastreamento facial em tempo real e do OpenGL ES para a renderização gráfica dos filtros, permitindo a sobreposição de elementos visuais (como óculos, máscaras e textos) diretamente sobre o rosto do usuário capturado pela câmera frontal do dispositivo.
 
-**Tecnologias Utilizadas**
+***Tecnologias Utilizadas***
 
 **Android:** Plataforma utilizada para o desenvolvimento da aplicação móvel. O Android foi escolhido por oferecer suporte nativo ao ARCore, além de ferramentas consolidadas para desenvolvimento gráfico e acesso à câmera do dispositivo.
 
@@ -26,37 +26,42 @@ O Kotlin é a linguagem oficial para desenvolvimento Android e oferece: Código 
 
 **Jetpack Compose:** Framework moderno de interface utilizado para construir a tela inicial (Home) do aplicativo. Foi utilizado para: Criar a interface antes da abertura da câmera, Implementar botões e navegação entre telas
 
-Android Studio: Ambiente de desenvolvimento integrado (IDE) utilizado para: Programação, Gerenciamento de dependências, Execução e testes da aplicação em dispositivos físicos.
-Gradle: Ferramenta de automação e gerenciamento de dependências do projeto, responsável por: Configurar versões do SDK, Gerenciar bibliotecas (ARCore, Compose, OpenGL), Compilar e empacotar o aplicativo.
+**Android Studio:** Ambiente de desenvolvimento integrado (IDE) utilizado para: Programação, Gerenciamento de dependências, Execução e testes da aplicação em dispositivos físicos.
 
-Arquitetura do Projeto
+**Gradle:** Ferramenta de automação e gerenciamento de dependências do projeto, responsável por: Configurar versões do SDK, Gerenciar bibliotecas (ARCore, Compose, OpenGL), Compilar e empacotar o aplicativo.
+
+
+***Arquitetura do Projeto***
+
+
 O projeto foi estruturado de forma modular, separando claramente as responsabilidades de interface, controle da sessão AR e renderização gráfica, facilitando a compreensão, manutenção e expansão da aplicação.
 A arquitetura é composta principalmente pelas seguintes camadas:
-MainActivity
+
+**MainActivity**
 Responsável pela tela inicial (Home) do aplicativo.
 Funções principais: Exibir a interface inicial antes da abertura da câmera; Utilizar Jetpack Compose para construção da UI; Fornecer um botão que inicia a experiência de Realidade Aumentada; Realizar a navegação para a ARFaceActivity.
 A separação da Home evita que a câmera seja aberta imediatamente, tornando o aplicativo mais organizado e apresentável.
 
-ARFaceActivity
+**ARFaceActivity**
 Activity responsável pela execução da Realidade Aumentada.
 Funções principais: Inicializar a sessão do ARCore utilizando a câmera frontal; Configurar o modo Augmented Faces; Gerenciar permissões de câmera; Controlar o ciclo de vida da sessão AR (resume/pause); Integrar a GLSurfaceView com o loop de renderização (Renderer)
 Essa classe atua como o controlador central da aplicação de RA.
 
-GLSurfaceView
+**GLSurfaceView**
 Componente responsável por: Criar e manter o contexto OpenGL ES; Executar o loop de renderização contínuo; Chamar os métodos: onSurfaceCreated, onSurfaceChanged, onDrawFrame.
 A GLSurfaceView permite integrar a renderização gráfica em tempo real ao ambiente Android.
 
-BackgroundRenderer
+**BackgroundRenderer**
 Classe responsável por renderizar a imagem da câmera como fundo da cena.
 Funções principais: Criar uma textura externa (GL_TEXTURE_EXTERNAL_OES); Receber os frames da câmera via ARCore; Ajustar corretamente a imagem conforme a rotação do dispositivo; Desenhar o fundo da cena antes dos filtros.
 Essa etapa é essencial para compor a cena de Realidade Aumentada.
 
-GlassesRenderer (Renderer de Overlays)
+**GlassesRenderer (Renderer de Overlays)**
 Classe responsável pela renderização dos filtros faciais.
 Funções principais: Renderizar quads (planos 2D) sobre o rosto; Aplicar texturas PNG com transparência (óculos, texto, máscaras); Controlar posição, escala e profundidade dos objetos; Realizar o blend correto utilizando canal alpha; Ancorar os objetos em regiões específicas do rosto (nariz, testa, etc.)
 Essa classe é reutilizada para diferentes filtros, variando apenas os parâmetros de transformação e a textura aplicada.
 
-Sistema de Transformações
+**Sistema de Transformações**
 O posicionamento correto dos filtros é feito através de transformações geométricas, aplicadas em sequência:
 1.	Model Matrix
 o	Define a posição e escala do objeto em relação ao rosto
@@ -70,5 +75,32 @@ o	Define como a cena 3D é projetada na tela 2D
 o	Considera perspectiva e profundidade
 
 
+***Pipeline Gráfico da Aplicação***
+
+O pipeline gráfico da aplicação descreve o conjunto de etapas responsáveis por transformar os dados capturados pela câmera em uma cena final renderizada na tela, combinando imagem real e elementos virtuais em tempo real.
+Neste projeto, o pipeline gráfico segue as etapas descritas a seguir.
+
+**Captura da Imagem da Câmera (ARCore):** A aplicação utiliza o ARCore para acessar a câmera frontal do dispositivo. Cada frame capturado contém:
+•	A imagem da câmera
+•	Informações de rastreamento do rosto
+•	Poses e regiões faciais (Augmented Faces)
+O ARCore fornece esses dados já sincronizados, permitindo a renderização contínua da cena.
+
+**Textura da Câmera como Fundo da Cena:** A imagem da câmera é enviada para o OpenGL ES por meio de uma textura externa (GL_TEXTURE_EXTERNAL_OES).
+A classe BackgroundRenderer é responsável por: Criar essa textura externa, Receber os frames da câmera, Ajustar corretamente a imagem conforme a rotação do dispositivo,. Desenhar a câmera como plano de fundo da cena.
+Essa etapa garante que a cena virtual seja composta sobre a imagem real.
+
+**Rastreamento Facial (Augmented Faces):** O ARCore detecta e acompanha o rosto do usuário em tempo real, fornecendo: Posição e orientação do rosto, Regiões específicas (nariz, testa, etc.), Atualizações contínuas enquanto o rosto está visível.
+Essas informações são utilizadas como âncoras para posicionar corretamente os filtros gráficos.
+
+**Construção da Model Matrix:** A Model Matrix define a posição, escala e orientação de cada objeto virtual em relação ao rosto.
+Nesta aplicação, a Model Matrix é composta por: A pose da região facial fornecida pelo ARCore, Translações manuais (offsetX, offsetY, offsetZ), Escalas manuais (sizeY, wide)
+Esses ajustes permitem alinhar visualmente os filtros ao rosto do usuário.
+
+**View Matrix (Câmera Virtual):** A View Matrix representa a posição e orientação da câmera virtual na cena. Ela é obtida diretamente do ARCore e corresponde ao ponto de vista da câmera real do dispositivo. Essa matriz garante que os objetos virtuais sejam renderizados com a perspectiva correta em relação à câmera.
+
+**Projection Matrix (Projeção da Cena)**
+A Projection Matrix define como a cena tridimensional será projetada na tela bidimensional.
+A projeção utilizada considera: Campo de visão da câmera, Profundidade (near e far planes), Perspectiva realista dos objetos. Essa matriz é essencial para manter a coerência visual entre os elementos virtuais e a imagem real.
 
 
