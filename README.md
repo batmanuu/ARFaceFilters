@@ -1,7 +1,11 @@
 **Nome do Projeto**: AR FACE FILTERS: Aplicação de Realidade Aumentada para Filtros Faciais.
+
 **Disciplina**: Computação Gráfica
+
 **Turma**: 2025.2
+
 **Nome do Aluno**: Emanuelle Victoria Fernandes Silva
+
 **Data**: 12/01/2026
 
 **Objetivo do projeto:** O objetivo deste projeto é desenvolver uma aplicação móvel para Android que utilize Realidade Aumentada (RA) aplicada a filtros faciais, empregando conceitos fundamentais de Computação Gráfica.
@@ -102,5 +106,95 @@ Esses ajustes permitem alinhar visualmente os filtros ao rosto do usuário.
 **Projection Matrix (Projeção da Cena)**
 A Projection Matrix define como a cena tridimensional será projetada na tela bidimensional.
 A projeção utilizada considera: Campo de visão da câmera, Profundidade (near e far planes), Perspectiva realista dos objetos. Essa matriz é essencial para manter a coerência visual entre os elementos virtuais e a imagem real.
+_____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
 
 
+
+***Filtros implementados***
+
+**ÓCULOS + TEXTO**
+
+
+![WhatsApp Image 2026-01-17 at 19 32 19](https://github.com/user-attachments/assets/df30b281-670f-4dff-a23f-61ad3adca066)
+
+
+Óculos pixelados (“deal with it”)
+Renderizados como uma textura PNG com transparência, posicionados dinamicamente sobre a região dos olhos. O tamanho e a posição são ajustados a partir da largura do rosto detectada pelo ARCore, garantindo alinhamento mesmo com movimentos da cabeça.
+
+Texto curvo “COMPUTAÇÃO GRÁFICA”
+Um elemento textual em formato de arco, exibido acima da cabeça. O texto acompanha a rotação e a translação do rosto, mantendo coerência espacial (ancoragem facial) e reforçando o tema acadêmico do projeto.
+
+Interação em tempo real
+Ambos os elementos reagem instantaneamente a movimentos, rotações e mudanças de distância da câmera, demonstrando rastreamento facial contínuo.
+
+Conceitos técnicos aplicados:
+
+ARCore Augmented Faces para detecção e rastreamento facial.
+
+OpenGL ES 2.0 para renderização de quads texturizados.
+
+Transformações geométricas (model, view, projection) para posicionamento correto no espaço 3D.
+
+Blending com canal alpha para integrar PNGs ao feed da câmera sem recortes artificiais.
+
+Objetivo do filtro: Demonstrar, de forma visual e interativa, como técnicas de Computação Gráfica podem ser aplicadas em dispositivos móveis para criar experiências de realidade aumentada estáveis, expressivas e responsivas.
+
+_____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+
+**MÁSCARA DO BATMAN**
+
+![WhatsApp Image 2026-01-17 at 19 32 26](https://github.com/user-attachments/assets/9c4f0f0d-5b7e-48c1-bf8a-0e51327f34cf)
+
+Este filtro aplica uma máscara facial completa em tempo real utilizando ARCore Augmented Faces. A máscara é renderizada como uma textura PNG com transparência, posicionada diretamente sobre o rosto do usuário, acompanhando com precisão os movimentos da cabeça e as expressões faciais.
+
+Funcionamento técnico:
+
+Utiliza detecção facial em tempo real com a câmera frontal.
+
+A máscara é ancorada ao NOSE_TIP e ajustada manualmente nos eixos Y (altura) e Z (profundidade) para garantir alinhamento correto.
+
+O tamanho do filtro é escalado dinamicamente com base na largura do rosto, calculada a partir dos pontos FOREHEAD_LEFT e FOREHEAD_RIGHT.
+
+Renderização feita via OpenGL ES 2.0, com blending ativado para respeitar a transparência da textura.
+
+O filtro permanece estável mesmo com rotação e inclinação do rosto.
+
+
+Objetivo do filtro:
+
+Demonstrar o uso de:
+
+Mapeamento facial em Realidade Aumentada
+
+Transformações geométricas (translação e escala)
+
+Renderização 2D aplicada sobre um modelo facial 3D
+
+Esse filtro exemplifica a integração entre Computação Gráfica e Realidade Aumentada, aplicando conceitos práticos de visualização gráfica em dispositivos móveis Android.
+
+_____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+
+**MÁSCARA DO HOMEM ARANHA**
+
+![WhatsApp Image 2026-01-17 at 19 32 34](https://github.com/user-attachments/assets/723418c0-8d89-490b-bff0-5b7e84fc8292)
+![WhatsApp Image 2026-01-17 at 19 32 48](https://github.com/user-attachments/assets/2a9b8c16-f0ba-4173-97ca-ecaae0e8b05f)
+![WhatsApp Image 2026-01-17 at 19 32 39](https://github.com/user-attachments/assets/db7bb9a5-b2c7-4883-8eca-3a3dccad21d9)
+
+
+Este filtro simula uma pintura aplicada diretamente sobre o rosto, acompanhando com precisão os movimentos da cabeça e as expressões faciais em tempo real. Diferente de acessórios rígidos (como óculos ou máscaras físicas), o efeito é orgânico, dando a impressão de que o desenho faz parte da pele.
+
+Características principais:
+
+Mapeamento facial em tempo real: a textura é ancorada ao rosto usando Augmented Faces do ARCore, mantendo alinhamento correto mesmo com rotações e inclinações.
+
+Efeito de pintura: a imagem é aplicada como overlay plano sobre a face, com transparência (PNG com alpha), criando o visual de pintura.
+
+Desempenho em tempo real: renderização via OpenGL ES, garantindo resposta imediata aos movimentos.
+
+Uso no aplicativo:
+
+O filtro pode ser alternado pelo botão “Trocar Filtro”.
+
+Ideal para efeitos artísticos, temáticos ou demonstrações de Computação Gráfica aplicada à Realidade Aumentada.
+
+Este filtro evidencia conceitos de CG como texturização, transformações geométricas, blending (alpha) e rastreamento facial, integrados em um aplicativo Android com ARCore.
